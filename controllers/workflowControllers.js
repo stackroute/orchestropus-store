@@ -1,48 +1,97 @@
 
 var workflow =  require("./../schema/models/workflow");
+const yaml = require('js-yaml');
 //var movie =  require("./../models/languagePack");
+// var get=function(req,res){
+
+//   workflow.find(
+
+//     function(err,movies){
+//      if (err) {
+//       res.status(500);
+//       res.send('internal server error');
+//     } 
+//     else {
+
+//      res.status(200);
+//      res.send(movies);
+
+//    }
+//  }
+//  )
+
+// };
 var get=function(req,res){
+    var name=req.query.name;
+    console.log("name   "+name);
+    
+     Workflow.find({},function(err,docs){
+    if(err){
+            res.status(500);
+            res.send("Internal errr");
+            }
+            else{
+                    console.log("result of server ");
+                    console.log(docs);
+                    res.json(docs);
+            }
+    })
+}
 
-  workflow.find(
 
-    function(err,movies){
-     if (err) {
-      res.status(500);
-      res.send('internal server error');
-    } 
-    else {
+// var add=function(req,res){
+//  var mo=new workflow(req.body);
+//  mo.save(
 
-     res.status(200);
-     res.send(movies);
+//    function(err,mov){
+//      if (err) {
+//        console.log(err);
+//        //change 500
+//        res.status(500);
+//        res.send('server error');
+//      } 
+//      else {
+//       //che
+//       res.status(200);
+//       res.send(mov);
+
+//     }
+//   }
+//   )
+
+// };
+var add = function(req,res){
+       var workflow = new Workflow(req.body);
+       console.log(req.body);
+       var json = yaml.safeLoad(req.body.text);
+    //console.log("name is  "+req.body.workflowName);
+       var item={
+                   workflow_name: req.body.workflowName,
+                   creator: req.body.creatorName,
+                   description: req.body.description,
+                   tags:req.body.tags,
+                   workflows:json
+
+
+       };
+       mongo.connect(url,function(err,db)
+       {
+           db.collection('workflows').insertOne(item,function(err, result) {
+                   if (err) {
+                       console.log('---- DB add error <<=== ' + err + ' ===>>');
+                   } else {
+                       console.log("+-+- Workflow add status(+1-0) <<=== " + result.result.n + " ===>>");
+                       res.send('Successfully added.');
+                       db.close();
+                   }
+               })
+
+
+
+           });
+
 
    }
- }
- )
-
-};
-
-
-var add=function(req,res){
- var mo=new workflow(req.body);
- mo.save(
-
-   function(err,mov){
-     if (err) {
-       console.log(err);
-       //change 500
-       res.status(500);
-       res.send('server error');
-     } 
-     else {
-      //che
-      res.status(200);
-      res.send(mov);
-
-    }
-  }
-  )
-
-};
 
 var getById=function(req,res){
   console.log(req.params.workflowId);
@@ -55,7 +104,7 @@ var getById=function(req,res){
   else {
 
    res.status(200);
-   res.send(mov);
+   res.json(mov);
 
  }
 }
@@ -119,47 +168,47 @@ workflow.findById(req.params.workflowId,function(err,workfl){
 
 // //patch the particular data 
 
-var patch=function(req,res){
-  console.log(req.params.workflowId);
-  var id=req.params.workflowId;
-  workflow.findById(id,function(err,mov){
-   if (err) {
-    res.status(404);
-    res.send('Not Found');
-  } 
-  else {
+// var patch=function(req,res){
+//   console.log(req.params.workflowId);
+//   var id=req.params.workflowId;
+//   workflow.findById(id,function(err,mov){
+//    if (err) {
+//     res.status(404);
+//     res.send('Not Found');
+//   } 
+//   else {
 
-   if (req.body._id) {
-    delete req.body._id;
-  }
-  for (var i in req.body) {
-    mov[i]=req.body[i];
-  }
-
-
-  mov.save(
-
-    function(err,mov){
-     if (err) {
-       console.log(err);
-       res.status(500);
-       res.send('server error');
-     } 
-     else {
-
-       res.status(200);
-       res.send(mov);
-
-     }
-   }
-   )
+//    if (req.body._id) {
+//     delete req.body._id;
+//   }
+//   for (var i in req.body) {
+//     mov[i]=req.body[i];
+//   }
 
 
-}
-}
-)
+//   mov.save(
 
-};
+//     function(err,mov){
+//      if (err) {
+//        console.log(err);
+//        res.status(500);
+//        res.send('server error');
+//      } 
+//      else {
+
+//        res.status(200);
+//        res.send(mov);
+
+//      }
+//    }
+//    )
+
+
+// }
+// }
+// )
+
+// };
 
 // var creator=function(req,res){
 //   console.log("Inside creator")
@@ -197,7 +246,7 @@ var query=function(req,res){
 
     workflow.find({$or:[{workflow_name: { $in: req.query[key]}},{creator: {$in:req.query[key] }}]},
 
-      function(err,movies){
+      function(err,mov){
        if (err) {
          res.status(500);
          res.send('internal server error');
@@ -205,7 +254,7 @@ var query=function(req,res){
        else {
 
          res.status(200);
-         res.send(movies);
+         res.json(mov);
 
        }
      }
@@ -214,7 +263,7 @@ var query=function(req,res){
   else{
    workflow.find({tags:{$in: req.query[key]}},
 
-    function(err,movies){
+    function(err,mov){
      if (err) {
        res.status(500);
        res.send('internal server error');
@@ -222,7 +271,7 @@ var query=function(req,res){
      else {
 
        res.status(200);
-       res.send(movies);
+       res.json(movies);
 
      }
    }
@@ -240,13 +289,13 @@ var query=function(req,res){
 
 module.exports={
  add: add,
-	           //get: get,
-            getById:getById,
-            update:update,
-            del:del,
-            patch:patch,
+	           get: get,
+            //getById:getById,
+            //update:update,
+            //del:del,
+            //patch:patch,
              //workflow_name:workflow_name,
              //creator:creator,
              //tags:tags
-             query:query
+             //query:query
            };
