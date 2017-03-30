@@ -9,10 +9,10 @@ var workflows = new Schema({
 	creator : {type: String, required: true},
 	description : {type: String, required: true},
 	tags : {type: [String], required: true},
-	workflows :[{
+	workflows :{
 		version: {type: String, required: true},
 		stages: {type: {}, required: true}
-	}]
+	}
 });
 
 module.exports= mongoose.model('Workflows', workflows);
