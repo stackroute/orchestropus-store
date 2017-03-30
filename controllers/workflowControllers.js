@@ -1,6 +1,8 @@
 
 var workflow =  require("./../schema/models/workflow");
 const yaml = require('js-yaml');
+var mongo=require('mongodb');
+var url="mongodb://localhost/workflowsandlanpacks";
 //var movie =  require("./../models/languagePack");
 // var get=function(req,res){
 
@@ -25,7 +27,7 @@ var get=function(req,res){
     var name=req.query.name;
     console.log("name   "+name);
     
-     Workflow.find({},function(err,docs){
+     workflow.find({},function(err,docs){
     if(err){
             res.status(500);
             res.send("Internal errr");
@@ -61,7 +63,7 @@ var get=function(req,res){
 
 // };
 var add = function(req,res){
-       var workflow = new Workflow(req.body);
+       //var workflow = new workflow(req.body);
        console.log(req.body);
        var json = yaml.safeLoad(req.body.text);
     //console.log("name is  "+req.body.workflowName);
@@ -289,7 +291,7 @@ var query=function(req,res){
 
 module.exports={
  add: add,
-	           get: get,
+	           get: get
             //getById:getById,
             //update:update,
             //del:del,
