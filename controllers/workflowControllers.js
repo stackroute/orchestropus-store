@@ -268,12 +268,12 @@ var query=function(req,res){
     function(err,mov){
      if (err) {
        res.status(500);
-       res.send('internal server error');
+       res.json('internal server error');
      } 
      else {
 
        res.status(200);
-       res.json(movies);
+       res.json(mov);
 
      }
    }
@@ -283,6 +283,26 @@ var query=function(req,res){
 
 };
 
+var searchByTags=function(req,res){
+ var tag=req.query.search_item;
+    console.log("tagsss   "+tag);
+    var t=tag.split(',');
+    console.log(t);
+     Workflow.find({ $or :[{"tags":{"$all":t}},{"workflow_name":t}]},function(err,docs){
+    if(err){
+            res.status(500);
+            res.send("Internal errr");
+            }
+            else{
+                    console.log("result of server ");
+                    //console.log(docs);
+                    res.json(docs);
+            }
+    })
+
+
+}
+
 
 
 
@@ -290,8 +310,8 @@ var query=function(req,res){
 
 
 module.exports={
- add: add,
-             get: get
+            add: add,
+             get: get,
             //getById:getById,
             //update:update,
             //del:del,
@@ -300,4 +320,5 @@ module.exports={
              //creator:creator,
              //tags:tags
              //query:query
+             searchByTags:searchByTags
            };
