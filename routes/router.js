@@ -14,7 +14,7 @@ router.post('/add',controllers.add);
 
 // router.put('/:workflowId',controllers.update);
 // router.patch('/:workflowId',controllers.patch);
- //router.get('/search',controllers.query);
- router.get('/search',controllers.searchByTags);
+ router.get('/search',controllers.query);
+ //router.get('/search',controllers.searchByTags);
 
 module.exports=router;

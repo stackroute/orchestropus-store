@@ -246,7 +246,7 @@ var query=function(req,res){
   console.log("inside creator");
   if (x=='string') {
 
-    workflow.find({$or:[{workflow_name: { $in: req.query[key]}},{creator: {$in:req.query[key] }}]},
+    workflow.find({$or:[{workflow_name: { $in: req.query[key]}},{creator: {$in:req.query[key] }},{tags:{$all: req.query[key]}}]},
 
       function(err,mov){
        if (err) {
@@ -283,25 +283,25 @@ var query=function(req,res){
 
 };
 
-var searchByTags=function(req,res){
- var tag=req.query.search_item;
-    console.log("tagsss   "+tag);
-    var t=tag.split(',');
-    console.log(t);
-     Workflow.find({ $or :[{"tags":{"$all":t}},{"workflow_name":t}]},function(err,docs){
-    if(err){
-            res.status(500);
-            res.send("Internal errr");
-            }
-            else{
-                    console.log("result of server ");
-                    //console.log(docs);
-                    res.json(docs);
-            }
-    })
+// var searchByTags=function(req,res){
+//  var tag=req.query.search_item;
+//     console.log("tagsss   "+tag);
+//     var t=tag.split(',');
+//     console.log(t);
+//      Workflow.find({ $or :[{"tags":{"$all":t}},{"workflow_name":t}]},function(err,docs){
+//     if(err){
+//             res.status(500);
+//             res.send("Internal errr");
+//             }
+//             else{
+//                     console.log("result of server ");
+//                     //console.log(docs);
+//                     res.json(docs);
+//             }
+//     })
 
 
-}
+// }
 
 
 
@@ -319,6 +319,6 @@ module.exports={
              //workflow_name:workflow_name,
              //creator:creator,
              //tags:tags
-             //query:query
-             searchByTags:searchByTags
+             query:query
+             //searchByTags:searchByTags
            };
